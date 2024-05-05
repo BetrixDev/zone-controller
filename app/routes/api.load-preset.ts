@@ -24,7 +24,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   for (const presetZone of preset.presetZones) {
-    updateZoneColor(presetZone.zone);
+    updateZoneColor({ ...presetZone.zone, color: presetZone.color });
     await db
       .update(zones)
       .set({ color: presetZone.color })

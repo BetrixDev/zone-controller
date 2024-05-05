@@ -1,39 +1,9 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "08d456fb-46d9-479d-a32c-93870013359d",
+  "id": "be4495db-7c84-42b1-b5e5-cf86bc3fcb56",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "boards": {
-      "name": "boards",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "port": {
-          "name": "port",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "pins": {
       "name": "pins",
       "columns": {
@@ -63,7 +33,10 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "pins_id_zone_id_pk": {
-          "columns": ["id", "zone_id"],
+          "columns": [
+            "id",
+            "zone_id"
+          ],
           "name": "pins_id_zone_id_pk"
         }
       },
@@ -98,7 +71,10 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "preset_zones_zone_id_preset_id_pk": {
-          "columns": ["preset_id", "zone_id"],
+          "columns": [
+            "preset_id",
+            "zone_id"
+          ],
           "name": "preset_zones_zone_id_preset_id_pk"
         }
       },
@@ -134,13 +110,6 @@
           "name": "id",
           "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "board_id": {
-          "name": "board_id",
-          "type": "text",
-          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },

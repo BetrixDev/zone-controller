@@ -1,12 +1,8 @@
 import { atom } from "jotai";
 
-export const isAddBoardDialogOpenAtom = atom(false);
-
-export const addZoneDialogBoardIdAtom = atom<string | undefined>(undefined);
+export const isAddZoneBoardDialogOpenAtom = atom(false);
 
 export const deleteZoneDialogIdAtom = atom<string | undefined>(undefined);
-
-export const deleteBoardDialogIdAtom = atom<string | undefined>(undefined);
 
 export const isCreatePresetDialogOpenAtom = atom(false);
 

@@ -6,15 +6,8 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 
-export const boards = sqliteTable("boards", {
-  id: text("id").primaryKey(),
-  displayName: text("display_name").notNull(),
-  port: text("port").notNull(),
-});
-
 export const zones = sqliteTable("zones", {
   id: text("id").primaryKey(),
-  boardId: text("board_id").notNull(),
   displayName: text("display_name").notNull(),
   type: text("type", { enum: ["white", "rgb"] })
     .notNull()
@@ -56,15 +49,7 @@ export const presetZones = sqliteTable(
   }),
 );
 
-export const boardsRelations = relations(boards, ({ many }) => ({
-  zones: many(zones),
-}));
-
 export const zonesRelations = relations(zones, ({ one, many }) => ({
-  board: one(boards, {
-    fields: [zones.boardId],
-    references: [boards.id],
-  }),
   pins: many(pins),
 }));
 

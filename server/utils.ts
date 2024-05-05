@@ -1,5 +1,3 @@
-import { json } from "@remix-run/node";
-import { boardRegistry } from "./board-registry";
 import { env } from "./env";
 import five from "johnny-five";
 
@@ -10,7 +8,6 @@ export const hexToRgb = (hex: string) => ({
 });
 
 type ZoneData = {
-  boardId: string;
   type: "white" | "rgb";
   color: string;
   isPca9685: boolean;
@@ -20,12 +17,6 @@ type ZoneData = {
 
 export function updateZoneColor(zone: ZoneData) {
   if (!env.DETACHED) {
-    const board = boardRegistry.getBoard(zone.boardId);
-
-    if (!board) {
-      return json({ message: "Unable to find board" }, { status: 400 });
-    }
-
     if (zone.type === "rgb") {
       const r = zone.pins.find(
         ({ associatedColor }) => associatedColor === "r",
@@ -42,7 +33,6 @@ export function updateZoneColor(zone: ZoneData) {
       }
 
       const rgbLed = new five.Led.RGB({
-        board,
         pins: [r.id, g.id, b.id],
         controller: zone.isPca9685 ? "PCA9685" : undefined,
         address: zone.isPca9685 ? zone.pcaAddress ?? undefined : undefined,
@@ -58,7 +48,6 @@ export function updateZoneColor(zone: ZoneData) {
       }
 
       const whiteLed = new five.Led({
-        board,
         pin: w.id,
         controller: zone.isPca9685 ? "PCA9685" : undefined,
         address: zone.isPca9685 ? zone.pcaAddress ?? undefined : undefined,

@@ -28,7 +28,6 @@ type ZoneCardProps = {
   displayName: string;
   enabled: boolean;
   id: string;
-  boardId: string;
   isPca9685: boolean;
   pcaAddress: number | null;
   color: string;

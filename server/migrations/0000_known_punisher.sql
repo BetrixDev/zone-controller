@@ -1,9 +1,3 @@
-CREATE TABLE `boards` (
-	`id` text PRIMARY KEY NOT NULL,
-	`display_name` text NOT NULL,
-	`port` text NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE `pins` (
 	`id` integer NOT NULL,
 	`zone_id` text NOT NULL,
@@ -25,7 +19,6 @@ CREATE TABLE `presets` (
 --> statement-breakpoint
 CREATE TABLE `zones` (
 	`id` text PRIMARY KEY NOT NULL,
-	`board_id` text NOT NULL,
 	`display_name` text NOT NULL,
 	`type` text DEFAULT 'white' NOT NULL,
 	`is_pca9685` integer DEFAULT false NOT NULL,

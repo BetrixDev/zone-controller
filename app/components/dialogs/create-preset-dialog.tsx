@@ -28,7 +28,7 @@ import {
 import { Button } from "../ui/button";
 
 export default function CreatePresetDialog() {
-  const { boards } = useLoaderData<typeof loader>();
+  const { zones } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
   const [isCreatePresetDialogOpen, setIsCreatePresetDialogOpen] = useAtom(
@@ -58,7 +58,6 @@ export default function CreatePresetDialog() {
 
   if (!isCreatePresetDialogOpen) return null;
 
-  const allZones = boards.flatMap((b) => b.zones);
   const specificZones = form.watch("specificZones");
 
   function onDropdownCheckedChanged(checked: boolean, zoneId: string) {
@@ -123,7 +122,7 @@ export default function CreatePresetDialog() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="min-w-48">
-                        {allZones.map((zone) => (
+                        {zones.map((zone) => (
                           <DropdownMenuCheckboxItem
                             key={zone.id}
                             checked={specificZones?.includes(zone.id)}
@@ -140,7 +139,7 @@ export default function CreatePresetDialog() {
                   </FormControl>
                   {specificZones === undefined ||
                   specificZones.length === 0 ||
-                  specificZones.length === allZones.length ? (
+                  specificZones.length === zones.length ? (
                     <p className="text-sm text-muted-foreground">
                       Saving all zones
                     </p>

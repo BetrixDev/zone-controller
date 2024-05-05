@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { useAtom } from "jotai";
-import { addZoneDialogBoardIdAtom } from "~/atoms";
+import { isAddZoneBoardDialogOpenAtom } from "~/atoms";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import {
   Form,
@@ -28,8 +28,8 @@ import {
 export default function AddZoneDialog() {
   const { revalidate } = useRevalidator();
 
-  const [addZoneDialogBoardId, setAddZoneDialogBoardId] = useAtom(
-    addZoneDialogBoardIdAtom,
+  const [isAddZoneBoardDialogOpen, setIsAddZoneBoardDialogOpen] = useAtom(
+    isAddZoneBoardDialogOpenAtom,
   );
 
   const form = useForm<AddZoneData>({
@@ -45,14 +45,11 @@ export default function AddZoneDialog() {
 
   const { mutate: onSubmit } = useMutation({
     mutationFn: async (data: AddZoneData) => {
-      await axios.post("/api/add-zone", {
-        ...data,
-        boardId: addZoneDialogBoardId,
-      });
+      await axios.post("/api/add-zone", data);
     },
     onSuccess: () => {
       form.reset();
-      setAddZoneDialogBoardId(undefined);
+      setIsAddZoneBoardDialogOpen(false);
       revalidate();
     },
     onError: (err: AxiosError<{ message: string; field?: string }>) => {
@@ -62,16 +59,16 @@ export default function AddZoneDialog() {
     },
   });
 
-  if (addZoneDialogBoardId === undefined) return null;
+  if (!isAddZoneBoardDialogOpen) return null;
 
   const zoneType = form.watch("type");
   const controllerType = form.watch("controller");
 
   return (
     <Dialog
-      open={addZoneDialogBoardId !== undefined}
+      open={isAddZoneBoardDialogOpen}
       onOpenChange={() => {
-        setAddZoneDialogBoardId(undefined);
+        setIsAddZoneBoardDialogOpen(false);
         form.reset();
       }}
     >

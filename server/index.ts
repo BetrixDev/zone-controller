@@ -6,11 +6,31 @@ import { logger } from "hono/logger";
 import { remix } from "remix-hono/handler";
 import { cache } from "server/middlewares";
 import { importDevBuild } from "./dev/server";
-import { runMigrations } from "./db";
-import { boardRegistry } from "./board-registry";
+import { db, runMigrations } from "./db";
+import { env } from "./env";
+import five from "johnny-five";
+import { updateZoneColor } from "./utils";
+
+let board: five.Board;
+
+if (!env.DETACHED) {
+  board = new five.Board({
+    repl: false,
+    debug: false,
+  });
+
+  board.on("ready", async () => {
+    const allZones = await db.query.zones.findMany({
+      with: { pins: true },
+    });
+
+    allZones.forEach((zone) => {
+      updateZoneColor(zone);
+    });
+  });
+}
 
 await runMigrations();
-await boardRegistry.init();
 
 const mode =
   process.env.NODE_ENV === "test" ? "development" : process.env.NODE_ENV;

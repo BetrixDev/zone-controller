@@ -1,4 +1,4 @@
-import { useRevalidator } from "@remix-run/react";
+import { useLoaderData, useRevalidator } from "@remix-run/react";
 import { useAtom } from "jotai";
 import { deleteZoneDialogIdAtom } from "~/atoms";
 import {
@@ -12,8 +12,10 @@ import { Button } from "../ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { ZoneByIdRes } from "~/routes/api.zone-by-id.$zoneId";
+import { loader } from "~/routes/_index";
 
 export default function DeleteZoneDialog() {
+  const { zones } = useLoaderData<typeof loader>();
   const { revalidate } = useRevalidator();
 
   const [deleteZoneDialogId, setDeleteZoneDialogId] = useAtom(
@@ -32,19 +34,7 @@ export default function DeleteZoneDialog() {
     },
   });
 
-  const { data: zoneData } = useQuery({
-    queryKey: ["zoneById", deleteZoneDialogId],
-    queryFn: async () => {
-      if (!deleteZoneDialogId) return;
-
-      const res = await axios.get<ZoneByIdRes>(
-        `/api/zone-by-id/${deleteZoneDialogId}`,
-      );
-
-      return res.data;
-    },
-    enabled: deleteZoneDialogId !== undefined,
-  });
+  const zoneData = zones.find((z) => z.id === deleteZoneDialogId);
 
   if (!deleteZoneDialogId) return null;
 
@@ -60,8 +50,7 @@ export default function DeleteZoneDialog() {
           </DialogTitle>
           {zoneData && (
             <DialogDescription>
-              {zoneData.displayName} is connected to{" "}
-              {zoneData.board.displayName} and uses the following pins:{" "}
+              {zoneData.displayName} is connected to the following pins:{" "}
               {zoneData.pins.map((p) => p.id).join(", ")}
             </DialogDescription>
           )}

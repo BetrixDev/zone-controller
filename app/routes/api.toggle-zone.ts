@@ -1,5 +1,5 @@
 import { ActionFunctionArgs } from "@remix-run/node";
-import { eq } from "drizzle-orm";
+import { ConsoleLogWriter, eq } from "drizzle-orm";
 import { db } from "server/db";
 import { zones } from "server/schema";
 import { updateZoneColor } from "server/utils";
@@ -39,6 +39,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     return new Response(undefined, { status: 200 });
   } catch (e: unknown) {
+    console.log(e);
     if (e instanceof ZodError) {
       return new Response(undefined, { status: 400 });
     } else {

@@ -10,7 +10,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   return db.query.zones.findFirst({
     where: (table, { eq }) => eq(table.id, zoneId),
-    with: { board: true, pins: true },
+    with: { pins: true },
   });
 }
 

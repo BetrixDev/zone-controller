@@ -4,6 +4,7 @@ import { zones, pins } from "server/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { nanoid } from "nanoid";
+import { updateZoneColor } from "server/utils";
 
 export const addZoneSchema = z.object({
   displayName: z.string().min(1, "Display name must be atleast 1 character"),
@@ -13,16 +14,12 @@ export const addZoneSchema = z.object({
   address: z.number().optional(),
 });
 
-const addZoneRequestSchema = addZoneSchema.extend({
-  boardId: z.string(),
-});
-
 export type AddZoneData = z.infer<typeof addZoneSchema>;
 
 export const addZoneResolver = zodResolver(addZoneSchema);
 
 export async function action({ request }: ActionFunctionArgs) {
-  const data = addZoneRequestSchema.parse(await request.json());
+  const data = addZoneSchema.parse(await request.json());
 
   const isPca9685 = data.controller === "pca9685" && data.address !== undefined;
 
@@ -32,7 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const pinsInUseWithBoard = pinsInUse.filter((pin) => {
-    let isConflicting = pin.zone.boardId === data.boardId;
+    let isConflicting = true;
 
     if (isPca9685) {
       if (pin.zone.pcaAddress !== data.address) {
@@ -58,7 +55,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const [newZone] = await db
     .insert(zones)
     .values({
-      boardId: data.boardId,
       id: zoneId,
       displayName: data.displayName,
       type: data.type,
@@ -92,6 +88,17 @@ export async function action({ request }: ActionFunctionArgs) {
       }),
     ]);
   }
+
+  const newZoneData = await db.query.zones.findFirst({
+    where: (table, { eq }) => eq(table.id, newZone.id),
+    with: { pins: true },
+  });
+
+  if (!newZoneData) {
+    return new Response(undefined, { status: 500 });
+  }
+
+  updateZoneColor(newZoneData);
 
   return new Response(undefined, { status: 200 });
 }
