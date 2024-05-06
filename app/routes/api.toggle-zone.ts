@@ -28,7 +28,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .where(eq(zones.id, data.id));
 
       if (data.enabled) {
-        updateZoneColor(zoneData);
+        updateZoneColor({ ...zoneData, enabled: true });
       } else {
         updateZoneColor({
           ...zoneData,

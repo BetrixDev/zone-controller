@@ -12,10 +12,15 @@ type ZoneData = {
   color: string;
   isPca9685: boolean;
   pcaAddress: number | null;
+  enabled: boolean;
   pins: { id: number; associatedColor: string }[];
 };
 
 export function updateZoneColor(zone: ZoneData) {
+  if (!zone.enabled) {
+    zone.color = "#000000";
+  }
+
   if (!env.DETACHED) {
     if (zone.type === "rgb") {
       const r = zone.pins.find(
